@@ -327,3 +327,7 @@ func (cl *Client) Print(w io.Writer) {
 	k, _ := cl.Credentials.Keytab().JSON()
 	fmt.Fprintf(w, "Keytab:\n%s\n", k)
 }
+
+func (cl *Client) GetSessionTGT() (messages.Ticket, types.EncryptionKey, error) {
+    return cl.sessionTGT(cl.Credentials.Domain())
+}

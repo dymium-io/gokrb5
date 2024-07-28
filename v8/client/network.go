@@ -203,3 +203,8 @@ func checkForKRBError(b []byte) ([]byte, error) {
 	}
 	return b, nil
 }
+
+// SendToKDC performs network actions to send data to the KDC.
+func (cl *Client) SendToKDC(b []byte, realm string) ([]byte, error) {
+	return cl.sendToKDC(b, realm)
+}	
