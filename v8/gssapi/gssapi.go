@@ -15,6 +15,10 @@ const (
 	OIDMSLegacyKRB5 OIDName = "MSLegacyKRB5" // MechType OID for Kerberos 5
 	OIDSPNEGO       OIDName = "SPNEGO"
 	OIDGSSIAKerb    OIDName = "GSSIAKerb" // Indicates the client cannot get a service ticket and asks the server to serve as an intermediate to the target KDC. http://k5wiki.kerberos.org/wiki/Projects/IAKERB#IAKERB_mech
+	OIDKRB5U2U	     OIDName = "KRB5U2U"   // MechType OID for Kerberos 5 User to User
+	OIDNTLM 	   OIDName = "NTLM"       // MechType OID for NTLM
+	OIDNEGOEX       OIDName = "NEGOEX"     // MechType OID for SPNEGO Extended Negotiation Security Mechanism
+
 )
 
 // GSS-API status values
@@ -128,6 +132,12 @@ func (o OIDName) OID() asn1.ObjectIdentifier {
 		return asn1.ObjectIdentifier{1, 2, 840, 48018, 1, 2, 2}
 	case OIDGSSIAKerb:
 		return asn1.ObjectIdentifier{1, 3, 6, 1, 5, 2, 5}
+	case OIDNTLM:
+		return asn1.ObjectIdentifier{1, 3, 6, 1, 4, 1, 311, 2, 2, 10}
+	case OIDKRB5U2U:
+		return asn1.ObjectIdentifier{1, 2, 840, 113554, 1, 2, 2, 3}
+	case OIDNEGOEX:
+		return asn1.ObjectIdentifier{1, 3, 6, 1, 4, 1, 311, 2, 2, 30}
 	}
 	return asn1.ObjectIdentifier{}
 }

@@ -52,7 +52,10 @@ func (m *KRB5Token) Marshal() ([]byte, error) {
 			return []byte{}, fmt.Errorf("error marshalling AP_REQ for MechToken: %v", err)
 		}
 	case TOK_ID_KRB_AP_REP:
-		return []byte{}, errors.New("marshal of AP_REP GSSAPI MechToken not supported by gokrb5")
+		tb, err = m.APRep.Marshal()
+		if err != nil {
+			return []byte{}, fmt.Errorf("error marshalling AP_REQ for MechToken: %v", err)
+		}
 	case TOK_ID_KRB_ERROR:
 		return []byte{}, errors.New("marshal of KRB_ERROR GSSAPI MechToken not supported by gokrb5")
 	}

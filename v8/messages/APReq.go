@@ -120,7 +120,7 @@ func (a *APReq) Marshal() ([]byte, error) {
 		EncryptedAuthenticator: a.EncryptedAuthenticator,
 	}
 	var b []byte
-	b, err := a.Ticket.Marshal()
+	b, err := a.Ticket.Marshal4Wire()
 	if err != nil {
 		return b, err
 	}

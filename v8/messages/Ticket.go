@@ -113,6 +113,27 @@ func (t *Ticket) Marshal() ([]byte, error) {
 	return b, nil
 }
 
+// Marshal the Ticket.
+func (t *Ticket) Marshal4Wire() ([]byte, error) {
+	b, err := asn1.Marshal(struct {
+		TktVNO  int                 `asn1:"explicit,tag:0"`
+		Realm   string              `asn1:"generalstring,explicit,tag:1"`
+		SName   types.PrincipalName `asn1:"explicit,tag:2"`
+		EncPart types.EncryptedData `asn1:"explicit,tag:3"`
+	}{
+		TktVNO:  t.TktVNO,
+		Realm:   t.Realm,
+		SName:   t.SName,
+		EncPart: t.EncPart,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	b = asn1tools.AddASNAppTag(b, asnAppTag.Ticket)
+	return b, nil
+}
+
 // Unmarshal bytes b into the EncTicketPart struct.
 func (t *EncTicketPart) Unmarshal(b []byte) error {
 	_, err := asn1.UnmarshalWithParams(b, t, fmt.Sprintf("application,explicit,tag:%d", asnAppTag.EncTicketPart))
@@ -249,7 +270,7 @@ func (t *Ticket) GetPACType(keytab *keytab.Keytab, sname *types.PrincipalName, l
 func (t *Ticket) Valid(d time.Duration) (bool, error) {
 	// Check for future tickets or invalid tickets
 	time := time.Now().UTC()
-	if t.DecryptedEncPart.StartTime.Sub(time) > d || types.IsFlagSet(&t.DecryptedEncPart.Flags, flags.Invalid) {
+	if t.DecryptedEncPart.StartTime.Sub(time) > d || (t.DecryptedEncPart.Flags.BitLength != 0 && types.IsFlagSet(&t.DecryptedEncPart.Flags, flags.Invalid)) {
 		return false, NewKRBError(t.SName, t.Realm, errorcode.KRB_AP_ERR_TKT_NYV, "service ticket provided is not yet valid")
 	}
 
